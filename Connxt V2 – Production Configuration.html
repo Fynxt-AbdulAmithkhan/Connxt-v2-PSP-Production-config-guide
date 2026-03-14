@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connxt V2 – Production Configuration Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:'Inter',sans-serif;background:#CBD5E1;min-height:100vh;padding:40px 20px 60px;display:flex;flex-direction:column;align-items:center;gap:0}
+.page{width:794px;background:#fff;box-shadow:0 4px 32px rgba(0,0,0,.18),0 1px 4px rgba(0,0,0,.08);position:relative;overflow:hidden}
+.page+.page{margin-top:24px}
+/* COVER */
+.cover{min-height:1123px;display:flex;flex-direction:column}
+.cover-header{background:#0F2547;padding:56px 64px 48px;position:relative;overflow:hidden}
+.cover-header::before{content:'';position:absolute;top:-120px;right:-80px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.35) 0%,transparent 70%)}
+.cover-header::after{content:'';position:absolute;bottom:-60px;left:-40px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.15) 0%,transparent 70%)}
+.cover-logo-row{display:flex;align-items:center;gap:12px;margin-bottom:56px;position:relative;z-index:1}
+.cover-logo-icon{width:36px;height:36px;background:#2563EB;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.cover-logo-icon svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2}
+.cover-logo-text{font-size:13px;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase}
+.cover-div{width:1px;height:24px;background:rgba(255,255,255,.2);margin:0 4px}
+.cover-logo-sub{font-size:12px;color:rgba(255,255,255,.45);letter-spacing:1px;text-transform:uppercase}
+.cover-title-block{position:relative;z-index:1}
+.cover-eyebrow{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#60A5FA;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.cover-eyebrow::before{content:'';width:28px;height:2px;background:#2563EB;border-radius:2px}
+.cover-h1{font-size:38px;font-weight:700;color:#fff;line-height:1.2;letter-spacing:-.5px;margin-bottom:16px}
+.cover-h1 span{color:#60A5FA}
+.cover-subtitle{font-size:14px;color:rgba(255,255,255,.55);font-weight:400;line-height:1.6;max-width:420px}
+.cover-meta-bar{background:#1E3A6E;padding:20px 64px;display:flex;gap:48px}
+.cover-meta-item{display:flex;flex-direction:column;gap:4px}
+.cover-meta-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.cover-meta-value{font-size:12px;font-weight:600;color:rgba(255,255,255,.85);font-family:'JetBrains Mono',monospace}
+.cover-body{flex:1;padding:48px 64px;display:flex;flex-direction:column;gap:32px}
+.cover-intro{font-size:14px;color:#374151;line-height:1.8;border-left:3px solid #2563EB;padding-left:20px}
+.cover-toc-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#9CA3AF;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #E5E7EB}
+.cover-toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.cover-toc-item{display:flex;align-items:center;gap:14px;padding:10px 16px 10px 0;border-bottom:1px solid #F3F4F6;text-decoration:none}
+.cover-toc-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#fff;background:#2563EB;width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cover-toc-text{font-size:12.5px;color:#374151;font-weight:500}
+.cover-footer{margin-top:auto;padding:20px 64px;border-top:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between}
+.cover-footer-left,.cover-footer-right{font-size:11px;color:#9CA3AF;font-family:'JetBrains Mono',monospace}
+/* CONTENT PAGES */
+.content-page{min-height:1123px;display:flex;flex-direction:column}
+.page-header{background:#0F2547;padding:16px 64px;display:flex;align-items:center;justify-content:space-between}
+.page-header-title{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:1.5px;text-transform:uppercase}
+.page-header-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.3)}
+.page-body{padding:40px 64px 32px;flex:1}
+.page-footer{padding:14px 64px;border-top:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;background:#F9FAFB}
+.page-footer-left{font-size:10px;color:#9CA3AF;display:flex;align-items:center;gap:8px}
+.page-footer-dot{width:3px;height:3px;background:#D1D5DB;border-radius:50%}
+.page-footer-right{font-family:'JetBrains Mono',monospace;font-size:10px;color:#9CA3AF}
+/* SECTION HEADINGS */
+.sec-heading{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1.5px solid #E5E7EB}
+.sec-num-badge{background:#0F2547;color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:6px 10px;border-radius:4px;flex-shrink:0;margin-top:2px;letter-spacing:.5px}
+.sec-title{font-size:20px;font-weight:700;color:#0F2547;line-height:1.3;letter-spacing:-.3px}
+.sec-desc{font-size:12px;color:#6B7280;margin-top:4px}
+/* PROSE */
+.prose{font-size:13.5px;color:#374151;line-height:1.75;margin-bottom:16px}
+.prose strong{color:#111827;font-weight:600}
+/* SUB LABELS */
+.sub-label{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
+.sub-label-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;color:#2563EB;background:#EFF6FF;border:1px solid #BFDBFE;padding:2px 8px;border-radius:3px}
+.sub-label-text{font-size:11.5px;font-weight:700;color:#1E40AF;letter-spacing:.5px;text-transform:uppercase}
+.sub-label-line{flex:1;height:1px;background:#E5E7EB}
+/* LISTS */
+.bullet-list{list-style:none;margin:8px 0 16px}
+.bullet-list li{font-size:13.5px;color:#374151;padding:5px 0 5px 20px;position:relative;line-height:1.6}
+.bullet-list li::before{content:'';position:absolute;left:4px;top:13px;width:5px;height:5px;background:#2563EB;border-radius:50%}
+.step-list{list-style:none;margin:12px 0 16px;counter-reset:steps}
+.step-list li{font-size:13.5px;color:#374151;padding:10px 12px 10px 56px;position:relative;counter-increment:steps;border-bottom:1px solid #F3F4F6;line-height:1.6}
+.step-list li:last-child{border-bottom:none}
+.step-list li::before{content:'Step ' counter(steps);position:absolute;left:0;top:10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:#2563EB;background:#EFF6FF;border:1px solid #BFDBFE;padding:2px 7px;border-radius:3px;white-space:nowrap}
+/* CALLOUTS */
+.callout{display:flex;gap:12px;padding:12px 16px;border-radius:4px;margin:14px 0;font-size:13px;line-height:1.65}
+.callout-icon-wrap{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px;font-weight:700}
+.callout.note{background:#EFF6FF;border:1px solid #BFDBFE;border-left:3px solid #3B82F6;color:#1E3A8A}
+.callout.note .callout-icon-wrap{background:#BFDBFE;color:#1D4ED8}
+.callout.warn{background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #F59E0B;color:#78350F}
+.callout.warn .callout-icon-wrap{background:#FDE68A;color:#B45309}
+.callout strong{font-weight:700}
+/* INLINE CODE */
+code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:#EFF6FF;color:#1D4ED8;padding:1px 5px;border-radius:3px;border:1px solid #BFDBFE}
+/* SQL BLOCK */
+.sql-wrap{margin:12px 0 24px}
+.sql-block{border-radius:6px;overflow:hidden;border:1px solid #1F2937;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.sql-bar{background:#161D2B;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1F2937}
+.sql-bar-left{display:flex;align-items:center;gap:10px}
+.sql-dots{display:flex;gap:5px}
+.sql-dots span{width:9px;height:9px;border-radius:50%}
+.sql-dots span:nth-child(1){background:#FF5F57}
+.sql-dots span:nth-child(2){background:#FFBD2E}
+.sql-dots span:nth-child(3){background:#28CA41}
+.sql-filename{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#6B7280}
+.sql-badge{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;color:#60A5FA;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);padding:2px 7px;border-radius:3px;letter-spacing:1px;text-transform:uppercase}
+/* COPY BUTTON */
+.copy-btn{display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6B7280;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:4px 10px;border-radius:4px;cursor:pointer;transition:background .15s,border-color .15s,color .15s;white-space:nowrap;letter-spacing:.2px}
+.copy-btn:hover{background:rgba(96,165,250,.15);border-color:rgba(96,165,250,.4);color:#93C5FD}
+.copy-btn.success{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);color:#4ADE80}
+.copy-btn .btn-icon{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0}
+.sql-pre-wrap{background:#0D1117;padding:16px 20px;overflow-x:auto}
+.sql-pre-wrap pre{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.85;color:#CDD9E5;white-space:pre;margin:0}
+.t-kw{color:#FF7B72;font-weight:600}
+.t-tbl{color:#79C0FF}
+.t-col{color:#FFA657}
+.t-val{color:#A5D6FF}
+.t-ph{color:#FFD700;font-weight:600}
+/* TABLE */
+.ref-table{width:100%;border-collapse:collapse;font-size:12.5px;margin:12px 0 16px;border:1px solid #E5E7EB;border-radius:6px;overflow:hidden}
+.ref-table thead tr{background:#0F2547}
+.ref-table th{padding:10px 16px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.ref-table td{padding:9px 16px;color:#374151;border-top:1px solid #F3F4F6;vertical-align:middle}
+.ref-table tr:nth-child(even) td{background:#F9FAFB}
+/* CHECKLIST */
+.checklist{list-style:none;margin-top:16px}
+.checklist li{display:flex;align-items:flex-start;gap:12px;padding:9px 12px;border-bottom:1px solid #F3F4F6;font-size:13.5px;color:#374151;border-radius:3px}
+.checklist li:last-child{border-bottom:none}
+.chk{width:20px;height:20px;background:#DCFCE7;border:1.5px solid #86EFAC;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.chk svg{width:10px;height:10px;stroke:#15803D;fill:none;stroke-width:2.5}
+@media print{body{background:#fff;padding:0}.page{box-shadow:none;margin:0;width:100%}.copy-btn{display:none}}
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="page cover">
+  <div class="cover-header">
+    <div class="cover-logo-row">
+      <div class="cover-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <span class="cover-logo-text">Connxt</span>
+      <div class="cover-div"></div>
+      <span class="cover-logo-sub">Technical Documentation</span>
+    </div>
+    <div class="cover-title-block">
+      <div class="cover-eyebrow">PSP Integration &middot; Production Setup</div>
+      <h1 class="cover-h1">Production<br>Configuration <span>Guide</span></h1>
+      <p class="cover-subtitle">Step-by-step reference for configuring Connxt V2 PSP Integration in a live client production environment.</p>
+    </div>
+  </div>
+  <div class="cover-meta-bar">
+    <div class="cover-meta-item"><span class="cover-meta-label">Product Version</span><span class="cover-meta-value">Connxt V2</span></div>
+    <div class="cover-meta-item"><span class="cover-meta-label">Environment</span><span class="cover-meta-value">Production</span></div>
+    <div class="cover-meta-item"><span class="cover-meta-label">Document Type</span><span class="cover-meta-value">Config Guide</span></div>
+    <div class="cover-meta-item"><span class="cover-meta-label">Classification</span><span class="cover-meta-value">Internal Use</span></div>
+  </div>
+  <div class="cover-body">
+    <p class="cover-intro">This document provides the complete procedure for enabling and configuring PSP (Payment Service Provider) integration in Connxt V2 for an existing client production environment. All SQL queries include a <strong>Copy</strong> button for direct use in your database client.</p>
+    <div>
+      <div class="cover-toc-title">Table of Contents</div>
+      <div class="cover-toc-grid">
+        <a href="#s1" class="cover-toc-item"><span class="cover-toc-num">1</span><span class="cover-toc-text">Overview</span></a>
+        <a href="#s2" class="cover-toc-item"><span class="cover-toc-num">2</span><span class="cover-toc-text">Preconditions</span></a>
+        <a href="#s3" class="cover-toc-item"><span class="cover-toc-num">3</span><span class="cover-toc-text">Create Brand in Connxt V2</span></a>
+        <a href="#s4" class="cover-toc-item"><span class="cover-toc-num">4</span><span class="cover-toc-text">Enable PSP Integration (DB)</span></a>
+        <a href="#s5" class="cover-toc-item"><span class="cover-toc-num">5</span><span class="cover-toc-text">Configure PSP in Wallet Page</span></a>
+        <a href="#s6" class="cover-toc-item"><span class="cover-toc-num">6</span><span class="cover-toc-text">Update Existing PSP References</span></a>
+        <a href="#s7" class="cover-toc-item"><span class="cover-toc-num">7</span><span class="cover-toc-text">Verify Wire Transfer Method</span></a>
+        <a href="#s8" class="cover-toc-item"><span class="cover-toc-num">8</span><span class="cover-toc-text">Final Validation Checklist</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="cover-footer">
+    <span class="cover-footer-left">Connxt V2 &middot; Production Configuration Guide &middot; Internal Use Only</span>
+    <span class="cover-footer-right">Page 1 of 5</span>
+  </div>
+</div>
+
+<!-- PAGE 2: Sections 1, 2, 3 -->
+<div class="page content-page">
+  <div class="page-header"><span class="page-header-title">Connxt V2 &middot; Production Configuration Guide</span><span class="page-header-num">02</span></div>
+  <div class="page-body">
+
+    <div id="s1" class="sec-heading">
+      <span class="sec-num-badge">01</span>
+      <div><div class="sec-title">Overview</div><div class="sec-desc">Purpose and scope of this configuration guide</div></div>
+    </div>
+    <p class="prose">This document describes the end-to-end process for configuring <strong>Connxt V2 PSP Integration</strong> in a Production environment for an existing client. Complete all sections in order for a correct and verifiable setup.</p>
+    <ul class="bullet-list">
+      <li>Creating a Brand in the Connxt V2 Admin Portal</li>
+      <li>Enabling and configuring the PSP Integration API in the client database</li>
+      <li>Configuring the PSP through the CRM Wallet Configuration page</li>
+      <li>Updating all PaymentGatewayId references across related tables</li>
+      <li>Verifying the Wire Transfer Dynamic Bank Method configuration</li>
+    </ul>
+    <div class="callout note"><div class="callout-icon-wrap">i</div><div>All SQL queries are formatted for <strong>Microsoft SQL Server (T-SQL)</strong>. Each query block includes a <strong>Copy</strong> button &mdash; click it to copy the exact query to your clipboard instantly.</div></div>
+
+    <div id="s2" class="sec-heading" style="margin-top:36px">
+      <span class="sec-num-badge">02</span>
+      <div><div class="sec-title">Preconditions</div><div class="sec-desc">Required access and credentials before starting</div></div>
+    </div>
+    <p class="prose">Confirm all of the following are available before proceeding:</p>
+    <ul class="bullet-list">
+      <li><strong>Connxt V2 Admin Portal</strong> &mdash; admin-level access required</li>
+      <li><strong>Client Production Database</strong> &mdash; write access to Settings and CRM tables</li>
+      <li><strong>CRM Admin Panel</strong> &mdash; access to Wallet Configuration</li>
+      <li><strong>Production PSP Merchant Credentials</strong> &mdash; provided by the payment provider</li>
+    </ul>
+
+    <div id="s3" class="sec-heading" style="margin-top:36px">
+      <span class="sec-num-badge">03</span>
+      <div><div class="sec-title">Create Brand in Connxt V2</div><div class="sec-desc">Set up the client brand and generate the Secret Key</div></div>
+    </div>
+    <ol class="step-list">
+      <li>Log in to the <strong>Connxt V2 Admin Portal</strong>.</li>
+      <li>Navigate to <strong>Brand Management</strong>.</li>
+      <li>Click <strong>Create New Brand</strong> and complete the client details.</li>
+      <li>Set the <strong>Origin URL</strong> for the brand &mdash; e.g. <code>https://clientdomain.com</code></li>
+    </ol>
+    <div class="callout warn"><div class="callout-icon-wrap">!</div><div><strong>Important:</strong> After saving the brand, Connxt automatically generates a <strong>Secret Key</strong>. Store this securely &mdash; it is required in Section 04 step 4.6 to configure the authentication key.</div></div>
+  </div>
+  <div class="page-footer">
+    <div class="page-footer-left"><span>Connxt V2</span><div class="page-footer-dot"></div><span>Production Configuration</span><div class="page-footer-dot"></div><span>Internal Use Only</span></div>
+    <span class="page-footer-right">Page 2 of 5</span>
+  </div>
+</div>
+
+<!-- PAGE 3: Section 4 -->
+<div class="page content-page">
+  <div class="page-header"><span class="page-header-title">Section 04 &middot; Enable PSP Integration in Client Database</span><span class="page-header-num">03</span></div>
+  <div class="page-body">
+    <div id="s4" class="sec-heading">
+      <span class="sec-num-badge">04</span>
+      <div><div class="sec-title">Enable PSP Integration in Client Database</div><div class="sec-desc">Execute all queries against the Client Production Database &rarr; Settings table</div></div>
+    </div>
+
+    <div class="sub-label"><span class="sub-label-num">4.1</span><span class="sub-label-text">Enable PSP Integration API</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">settings.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE Settings SET [Value] = 'true' WHERE [Name] = 'IsPSPIntegerationAPIEnabled';"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">Settings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">[Value]</span> = <span class="t-val">'true'</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">[Name]</span>  = <span class="t-val">'IsPSPIntegerationAPIEnabled'</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">4.2</span><span class="sub-label-text">Configure Base API URL</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">settings.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE Settings SET [Value] = 'https://api.connect-prod.fynxt.com/connxt/v2' WHERE [Name] = 'PSP Integeration API';"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">Settings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">[Value]</span> = <span class="t-val">'https://api.connect-prod.fynxt.com/connxt/v2'</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">[Name]</span>  = <span class="t-val">'PSP Integeration API'</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">4.3</span><span class="sub-label-text">Configure Add PSP Endpoint</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">settings.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE Settings SET [Value] = '/psps/external' WHERE [Name] = 'PSPIntegerationAPIAddPSP';"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">Settings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">[Value]</span> = <span class="t-val">'/psps/external'</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">[Name]</span>  = <span class="t-val">'PSPIntegerationAPIAddPSP'</span>;</pre></div>
+    </div></div>
+    <div class="callout warn"><div class="callout-icon-wrap">!</div><div><strong>Important:</strong> If <code>PSPIntegerationAPIAddPSP</code> does not exist in the Settings table, use the INSERT in step 4.4 instead.</div></div>
+
+    <div class="sub-label"><span class="sub-label-num">4.4</span><span class="sub-label-text">Insert Setting — if row does not exist</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">settings.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="INSERT INTO Settings (Name, Description, Value, DataType, IsForCRM, IsForCP, IsForCPMobile) VALUES ('PSPIntegerationAPIAddPSP', 'API URL for Add a PSP Integeration', '/psps/external', 'string', 1, 0, 0);"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">INSERT INTO</span> <span class="t-tbl">Settings</span>
+  (<span class="t-col">Name</span>, <span class="t-col">Description</span>, <span class="t-col">Value</span>, <span class="t-col">DataType</span>, <span class="t-col">IsForCRM</span>, <span class="t-col">IsForCP</span>, <span class="t-col">IsForCPMobile</span>)
+  <span class="t-kw">VALUES</span>
+  (<span class="t-val">'PSPIntegerationAPIAddPSP'</span>, <span class="t-val">'API URL for Add a PSP Integeration'</span>,
+   <span class="t-val">'/psps/external'</span>, <span class="t-val">'string'</span>, <span class="t-val">1</span>, <span class="t-val">0</span>, <span class="t-val">0</span>);</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">4.5</span><span class="sub-label-text">Configure Transaction Endpoint</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">settings.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE Settings SET [Value] = '/transactions' WHERE [Name] = 'PSPIntegerationAPIoutboundinitiateURL';"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">Settings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">[Value]</span> = <span class="t-val">'/transactions'</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">[Name]</span>  = <span class="t-val">'PSPIntegerationAPIoutboundinitiateURL'</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">4.6</span><span class="sub-label-text">Configure Authentication Secret Key</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">settings.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE Settings SET [Value] = '{SECRET_KEY}' WHERE [Name] = 'PSPIntegerationAPIAuthKey';"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">Settings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">[Value]</span> = <span class="t-val">'<span class="t-ph">{SECRET_KEY}</span>'</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">[Name]</span>  = <span class="t-val">'PSPIntegerationAPIAuthKey'</span>;</pre></div>
+    </div></div>
+    <div class="callout note"><div class="callout-icon-wrap">i</div><div>Replace <code>{SECRET_KEY}</code> with the Secret Key generated when the brand was created in Section 03.</div></div>
+  </div>
+  <div class="page-footer">
+    <div class="page-footer-left"><span>Connxt V2</span><div class="page-footer-dot"></div><span>Production Configuration</span><div class="page-footer-dot"></div><span>Internal Use Only</span></div>
+    <span class="page-footer-right">Page 3 of 5</span>
+  </div>
+</div>
+
+<!-- PAGE 4: Sections 5 & 6 part -->
+<div class="page content-page">
+  <div class="page-header"><span class="page-header-title">Section 05&ndash;06 &middot; Configure PSP &amp; Update References</span><span class="page-header-num">04</span></div>
+  <div class="page-body">
+    <div id="s5" class="sec-heading">
+      <span class="sec-num-badge">05</span>
+      <div><div class="sec-title">Configure PSP in Wallet Configuration Page</div><div class="sec-desc">Set up production merchant details via CRM Admin Panel</div></div>
+    </div>
+    <ol class="step-list">
+      <li>Log in to the <strong>CRM Admin Panel</strong>.</li>
+      <li>Navigate to <strong>Wallet &rarr; Payment Gateway Configuration</strong>.</li>
+      <li>Enter the <strong>Production Merchant Details</strong> for the PSP.</li>
+      <li>Save the configuration.</li>
+    </ol>
+    <p class="prose" style="margin-top:14px">Upon saving, records are created automatically in:</p>
+    <table class="ref-table">
+      <thead><tr><th>Table Name</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>CRM_PaymentGatewayMaster</code></td><td>Primary payment gateway record</td></tr>
+        <tr><td><code>CRM_PaymentGatewayAPIMaster</code></td><td>API configuration record</td></tr>
+        <tr><td><code>CRM_PaymentGatewayCurrency</code></td><td>Currency mapping record</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><div class="callout-icon-wrap">!</div><div><strong>Important:</strong> A new <code>PaymentGatewayId</code> is generated automatically. Record this value &mdash; needed for all queries in Section 06. Example: Old ID = <strong>66</strong> &rarr; New ID = <strong>200</strong> (illustrative only).</div></div>
+
+    <div id="s6" class="sec-heading" style="margin-top:36px">
+      <span class="sec-num-badge">06</span>
+      <div><div class="sec-title">Update Existing PSP References</div><div class="sec-desc">Replace OLD_ID with previous PSP ID and NEW_ID with the newly generated ID</div></div>
+    </div>
+    <div class="callout note"><div class="callout-icon-wrap">i</div><div>In every query below, replace <code>OLD_ID</code> with the existing PaymentGatewayId and <code>NEW_ID</code> with the one generated in Section 05.</div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.1</span><span class="sub-label-text">CRM_PaymentGatewayMaster</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_PaymentGatewayMaster SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_PaymentGatewayMaster</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.2</span><span class="sub-label-text">CRM_PaymentGateWayAPIMaster</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_PaymentGateWayAPIMaster SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_PaymentGateWayAPIMaster</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.3</span><span class="sub-label-text">CRM_PaymentGateWayCurrency</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_PaymentGateWayCurrency SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_PaymentGateWayCurrency</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.4</span><span class="sub-label-text">CRM_CountryWiseDepositSettings</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_CountryWiseDepositSettings SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_CountryWiseDepositSettings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.5</span><span class="sub-label-text">CRM_CountryWiseWithdrawalSettings</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_CountryWiseWithdrawalSettings SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_CountryWiseWithdrawalSettings</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+  </div>
+  <div class="page-footer">
+    <div class="page-footer-left"><span>Connxt V2</span><div class="page-footer-dot"></div><span>Production Configuration</span><div class="page-footer-dot"></div><span>Internal Use Only</span></div>
+    <span class="page-footer-right">Page 4 of 5</span>
+  </div>
+</div>
+
+<!-- PAGE 5: Section 6 cont + 7 + 8 -->
+<div class="page content-page">
+  <div class="page-header"><span class="page-header-title">Section 06&ndash;08 &middot; References (cont.) &middot; Wire Transfer &middot; Checklist</span><span class="page-header-num">05</span></div>
+  <div class="page-body">
+
+    <div class="sub-label"><span class="sub-label-num">6.6</span><span class="sub-label-text">CRM_FundingHistory</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_FundingHistory SET PaymentGetwayId = NEW_ID WHERE PaymentGetwayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_FundingHistory</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGetwayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGetwayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.7</span><span class="sub-label-text">CRM_PaymentGatewayTransactions</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_PaymentGatewayTransactions SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_PaymentGatewayTransactions</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.8</span><span class="sub-label-text">CRM_APILogHistory</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_APILogHistory SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_APILogHistory</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.9</span><span class="sub-label-text">CRM_PaymentGatewayCustomization</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_PaymentGatewayCustomization SET PaymentGatewayId = NEW_ID WHERE PaymentGatewayId = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_PaymentGatewayCustomization</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentGatewayId</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.10</span><span class="sub-label-text">CRM_PaymentGatewaySupportedCurrencies</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_PaymentGatewaySupportedCurrencies SET PaymentMethodID = NEW_ID WHERE PaymentMethodID = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_PaymentGatewaySupportedCurrencies</span>
+  <span class="t-kw">SET</span>   <span class="t-col">PaymentMethodID</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">PaymentMethodID</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div class="sub-label"><span class="sub-label-num">6.11</span><span class="sub-label-text">CRM_BankAccountDetails</span><div class="sub-label-line"></div></div>
+    <div class="sql-wrap"><div class="sql-block">
+      <div class="sql-bar"><div class="sql-bar-left"><div class="sql-dots"><span></span><span></span><span></span></div><span class="sql-filename">update_refs.sql</span><span class="sql-badge">T-SQL</span></div>
+      <button class="copy-btn" data-q="UPDATE CRM_BankAccountDetails SET TransferMode = NEW_ID WHERE TransferMode = OLD_ID;"><svg class="btn-icon" viewBox="0 0 16 16"><rect x="4" y="4" width="9" height="10" rx="1.5"/><path d="M3 11H2a1 1 0 01-1-1V2a1 1 0 011-1h8a1 1 0 011 1v1"/></svg>Copy</button></div>
+      <div class="sql-pre-wrap"><pre><span class="t-kw">UPDATE</span> <span class="t-tbl">CRM_BankAccountDetails</span>
+  <span class="t-kw">SET</span>   <span class="t-col">TransferMode</span> = <span class="t-ph">NEW_ID</span>
+  <span class="t-kw">WHERE</span> <span class="t-col">TransferMode</span> = <span class="t-ph">OLD_ID</span>;</pre></div>
+    </div></div>
+
+    <div id="s7" class="sec-heading" style="margin-top:32px">
+      <span class="sec-num-badge">07</span>
+      <div><div class="sec-title">Verify Wire Transfer Dynamic Bank Method</div><div class="sec-desc">Confirm configuration record in CRM_paymentgatewayCustomFields</div></div>
+    </div>
+    <p class="prose">Verify that the dynamic bank method configuration record exists in the <code>CRM_paymentgatewayCustomFields</code> table.</p>
+    <div class="callout warn"><div class="callout-icon-wrap">!</div><div><strong>Important:</strong> Wire Transfer always uses <code>PaymentGatewayId = 4</code>. Only confirm the record exists &mdash; <strong>no UPDATE is needed</strong> if it is already present.</div></div>
+
+    <div id="s8" class="sec-heading" style="margin-top:32px">
+      <span class="sec-num-badge">08</span>
+      <div><div class="sec-title">Final Validation Checklist</div><div class="sec-desc">Confirm all steps are complete before signing off</div></div>
+    </div>
+    <ul class="checklist">
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Brand created in Connxt V2 Admin Portal</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Origin URL configured for the brand</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Secret Key generated and stored securely</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>All PSP Integration Settings updated in client database (4.1&ndash;4.6)</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>PSP configured via Wallet Configuration page in CRM Admin</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>New PaymentGatewayId generated and recorded</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>All 11 PSP reference tables updated with new PaymentGatewayId (6.1&ndash;6.11)</li>
+      <li><span class="chk"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span>Wire Transfer dynamic config confirmed for PaymentGatewayId = 4</li>
+    </ul>
+  </div>
+  <div class="page-footer">
+    <div class="page-footer-left"><span>Connxt V2</span><div class="page-footer-dot"></div><span>Production Configuration</span><div class="page-footer-dot"></div><span>Internal Use Only</span></div>
+    <span class="page-footer-right">Page 5 of 5</span>
+  </div>
+</div>
+
+<script>
+// Copy button — reads plain SQL from data-q attribute only. No DOM traversal.
+document.querySelectorAll('.copy-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var sql=btn.getAttribute('data-q');
+    if(!sql)return;
+    var orig=btn.innerHTML;
+    function ok(){
+      btn.classList.add('success');
+      btn.innerHTML='<svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" style="width:12px;height:12px;flex-shrink:0"><polyline points="2,8 6,12 14,4"/></svg> Copied!';
+      setTimeout(function(){btn.classList.remove('success');btn.innerHTML=orig;},2000);
+    }
+    if(navigator.clipboard&&window.isSecureContext){
+      navigator.clipboard.writeText(sql).then(ok).catch(function(){fb(sql,ok);});
+    }else{fb(sql,ok);}
+  });
+});
+function fb(t,cb){
+  var el=document.createElement('textarea');
+  el.value=t;el.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(el);el.focus();el.select();
+  try{document.execCommand('copy');cb();}catch(e){}
+  document.body.removeChild(el);
+}
+</script>
+</body>
+</html>
